@@ -30,3 +30,28 @@ exports.register = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.listUsers = async (req, res, next) => {
+  try {
+    const page = Number.parseInt(req.query.page) || 1;
+    const limit = Number.parseInt(req.query.limit) || 10;
+
+    if (page < 1 || limit < 1 || limit > 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Parâmetros de paginação inválidos",
+      });
+    }
+
+    const result = await User.findAll(page, limit);
+
+    res.json({
+      success: true,
+      data: result.data,
+      pagination: result.pagination,
+    });
+  } catch (err) {
+    console.error("Error listing users: ", err);
+    next(err);
+  }
+};
