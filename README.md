@@ -32,3 +32,35 @@ Relatório Técnico em word ou PDF ou um readme para o Github do projeto, escolh
 Incluir um relatório final explicando como a aplicação foi desenvolvida, como funciona o MVC e suas múltiplas formas de utilização foram implementados, e como a validação dos campos funciona.
 Destaquem também as principais dificuldades encontradas e as soluções adotadas.
 e coloque as referências utilizadas
+
+/manage-api
+│
+├── /src
+│ ├── /modules
+│ │ ├── /product-management
+│ │ │
+│ │ │ ├── /controller
+│ │ │ │ ├── categoryController.js
+│ │ │ │ ├── productController.js
+│ │ │ ├── /models
+| | | | ├── Category.js
+| | | | ├── Product.js
+│ │ │ ├── /queries
+│ │ │ │ ├── categoryQueries.js
+│ │ │ │ ├── productQueries.js
+│ │ │ ├── /routes
+│ │ │ │ ├── categoryRoutes.js
+│ │ │ │ ├── productRoutes.js
+│ │ │ │
+│ │ │
+│ │ └── /user-management
+│ │
+│ ├── /database
+│ │ ├── connection.js
+│ │ └── setup.js
+│ │
+│ │
+│ └── app.js
+│
+├── package.json
+└── .env

@@ -12,6 +12,11 @@ app.use(
   require("./src/modules/product-management/routes/categoryRoutes")
 );
 
+app.use(
+  "/api/products",
+  require("./src/modules/product-management/routes/productRoutes")
+);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
