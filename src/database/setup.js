@@ -2,6 +2,8 @@ const pool = require("./connection");
 
 module.exports = async () => {
   try {
+    // await pool.query("CREATE DATABASE IF NOT EXISTS managedb_test");
+
     await pool.query(`
         CREATE TABLE IF NOT EXISTS categories(
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,6 +26,17 @@ module.exports = async () => {
             create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (category_id) REFERENCES categories(id)
         )`);
+
+    await pool.query(`CREATE TABLE IF NOT EXISTS users(
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(50) UNIQUE NOT NULL,
+      email VARCHAR(100) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL,
+      role ENUM('admin','manager','user') DEFAULT 'user',
+      is_active BOOLEAN DEFAULT TRUE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )`);
     console.log("Tabelas verificadas/criadas com sucesso");
   } catch (err) {
     console.log("Erro ao configurar o banco de dados", err);
