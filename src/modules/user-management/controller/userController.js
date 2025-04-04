@@ -55,3 +55,100 @@ exports.listUsers = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getUserById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    res.json({ success: true, data: user });
+  } catch (err) {
+    if (err.message === "Usuário não encontrado") {
+      return res.status(404).json({ success: false, message: err.message });
+    }
+    next(err);
+  }
+};
+
+exports.updateUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { username, email, role } = req.body;
+
+    await User.findById(id);
+
+    const updatedUser = await User.update(id, { username, email, role });
+
+    res.json({
+      success: true,
+      message: "Usuário atualizado com sucesso",
+      data: updatedUser,
+    });
+  } catch (err) {
+    if (err.message === "Usuário não encontrado") {
+      return res.status(404).json({
+        sucess: false,
+        message: err.message,
+      });
+    }
+    next(err);
+  }
+};
+
+exports.updatedUserPassword = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+
+    if (!newPassword || newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "A nova senha deve ter pelo menos 8 caracteres",
+      });
+    }
+
+    const success = await User.updatedPassword(id, newPassword);
+
+    if (!success) {
+      return res.status(404).json({
+        success: false,
+        message: "Usuário não encontrado",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Senha atualizada com sucesso",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    await User.findById(id);
+
+    const success = await User.delete(id);
+
+    if (!success) {
+      return res.status(404).json({
+        success: false,
+        message: "Usuário não encontrado",
+      });
+    }
+    res.json({
+      success: true,
+      message: "Usuário deletado com sucesso",
+    });
+  } catch (err) {
+    if (err.message === "Usuário não encontrado") {
+      return res.status(404).json({
+        success: false,
+        message: err.message,
+      });
+    }
+    next(err);
+  }
+};

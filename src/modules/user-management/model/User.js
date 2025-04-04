@@ -35,6 +35,19 @@ const User = {
     }
   },
 
+  async findById(id) {
+    try {
+      const [rows] = await pool.query(queries.findById, [id]);
+      if (!rows[0]) {
+        throw new Error("Usuário não encontrado");
+      }
+      return rows[0];
+    } catch (error) {
+      console.error("Error finding user by ID:", error);
+      throw error;
+    }
+  },
+
   async findAll(page = 1, pageSize = 10) {
     try {
       const offset = (page - 1) * pageSize;
@@ -54,6 +67,50 @@ const User = {
       };
     } catch (error) {
       console.error("Error listing users: ", error);
+      throw error;
+    }
+  },
+
+  async update(id, { username, email, role }) {
+    try {
+      const [result] = await pool.query(queries.updateUser, [
+        username,
+        email,
+        role,
+        id,
+      ]);
+      if (result.affectedRows === 0) {
+        throw new Error("Nenhum usuário foi atualizado");
+      }
+
+      return this.findById(id);
+    } catch (error) {
+      console.error("Error updating user: ", error);
+      throw error;
+    }
+  },
+
+  async updatePassword(id, newPassword) {
+    try {
+      const passwordHash = await this.hashPassword(newPassword);
+      const [result] = await pool.query(queries.updatePassword, [
+        passwordHash,
+        id,
+      ]);
+
+      return result.affectedRows > 0;
+    } catch (error) {
+      console.error("Error updating password: ", error);
+      throw error;
+    }
+  },
+
+  async delete(id) {
+    try {
+      const [result] = await pool.query(queries.deleteUser, [id]);
+      return result.affectedRows > 0;
+    } catch (error) {
+      console.error("Error deleting user: ", error);
       throw error;
     }
   },
